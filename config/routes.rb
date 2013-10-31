@@ -1,5 +1,7 @@
 Blog::Application.routes.draw do
-  # You can have the root of your site routed with "root"
+  
+  resources :posts
+
   root 'welcome#index'
 
 end
