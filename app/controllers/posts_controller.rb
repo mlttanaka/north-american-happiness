@@ -11,7 +11,7 @@ class PostsController < ApplicationController
   
   def create
     @post = current_user.posts.new(post_params)
- 
+    
     if @post.save
       redirect_to @post
     else
@@ -20,16 +20,21 @@ class PostsController < ApplicationController
   end
   
   def show
-    @post = current_user.posts.find(params[:id])
+    @post = Post.find(params[:id])
   end
   
   def edit
-    @post = current_user.posts.find(params[:id])
+    if current_user.posts.exists?(params[:id])
+      @post = current_user.posts.find(params[:id])
+    else
+      flash[:notice] = "You cannot edit someone else's post."
+      redirect_to posts_path
+    end
   end
   
   def update
     @post = current_user.posts.find(params[:id])
- 
+    
     if @post.update(post_params)
       redirect_to @post
     else
@@ -38,14 +43,12 @@ class PostsController < ApplicationController
   end
   
   def destroy
-    
     if current_user.posts.exists?(params[:id])
       @post = current_user.posts.find(params[:id])
       @post.destroy
     else
       flash[:notice] = "You cannot delete someone else's post."
     end
-    
     redirect_to posts_path
   end
   
